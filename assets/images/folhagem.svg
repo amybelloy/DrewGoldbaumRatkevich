@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f8a86"/>
+      <stop offset="1" stop-color="#21504e"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="softer" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+    <g id="frond">
+      <path d="M0 0C10-120 20-260 0-400" stroke="#2f5a2d" stroke-width="4" fill="none"/>
+      <path d="M2-60C50-90 90-80 120-60 80-40 40-40 2-60Z"/>
+      <path d="M2-60C-46-90-86-80-116-60-76-40-36-40 2-60Z"/>
+      <path d="M6-150C54-180 94-170 124-150 84-130 44-130 6-150Z"/>
+      <path d="M6-150C-42-180-82-170-112-150-72-130-32-130 6-150Z"/>
+      <path d="M8-240C50-268 84-260 110-242 76-222 42-222 8-240Z"/>
+      <path d="M8-240C-34-268-68-260-94-242-60-222-26-222 8-240Z"/>
+      <path d="M4-320C36-342 62-336 82-322 56-306 30-306 4-320Z"/>
+      <path d="M4-320C-28-342-54-336-74-322-48-306-22-306 4-320Z"/>
+    </g>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="#6f9a5c" opacity=".45" filter="url(#softer)">
+    <use href="#frond" transform="translate(600 900) scale(1.8)"/>
+    <use href="#frond" transform="translate(180 860) rotate(20) scale(1.5)"/>
+    <use href="#frond" transform="translate(1040 880) rotate(-22) scale(1.6)"/>
+  </g>
+  <g fill="#7ea866" opacity=".7" filter="url(#soft)">
+    <use href="#frond" transform="translate(60 820) rotate(35) scale(1.2)"/>
+    <use href="#frond" transform="translate(1160 820) rotate(-38) scale(1.25)"/>
+    <use href="#frond" transform="translate(380 840) rotate(10)"/>
+    <use href="#frond" transform="translate(850 840) rotate(-12) scale(1.05)"/>
+  </g>
+  <g fill="#9cc28a" opacity=".9">
+    <use href="#frond" transform="translate(-40 600) rotate(60) scale(.9)"/>
+    <use href="#frond" transform="translate(1240 560) rotate(-62) scale(.95)"/>
+  </g>
+</svg>

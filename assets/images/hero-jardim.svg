@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f9693"/>
+      <stop offset=".55" stop-color="#3d7a77"/>
+      <stop offset="1" stop-color="#1d4746"/>
+    </linearGradient>
+    <filter id="blur-far" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="blur-mid" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="blur-bokeh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22"/></filter>
+    <path id="leaf" d="M0 0C30-40 90-50 140-30 100 10 40 20 0 0Z"/>
+    <g id="flower">
+      <ellipse cx="0" cy="-22" rx="13" ry="24"/><ellipse cx="0" cy="22" rx="13" ry="24"/>
+      <ellipse cx="-22" cy="0" rx="24" ry="13"/><ellipse cx="22" cy="0" rx="24" ry="13"/>
+      <ellipse cx="-15" cy="-15" rx="12" ry="22" transform="rotate(-45 -15 -15)"/>
+      <ellipse cx="15" cy="15" rx="12" ry="22" transform="rotate(-45 15 15)"/>
+      <ellipse cx="15" cy="-15" rx="12" ry="22" transform="rotate(45 15 -15)"/>
+      <ellipse cx="-15" cy="15" rx="12" ry="22" transform="rotate(45 -15 15)"/>
+    </g>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <g filter="url(#blur-bokeh)" opacity=".5">
+    <circle cx="260" cy="180" r="90" fill="#f3e6c4"/>
+    <circle cx="1280" cy="140" r="120" fill="#cfe2ec"/>
+    <circle cx="980" cy="320" r="70" fill="#f3e6c4"/>
+    <circle cx="520" cy="380" r="60" fill="#d9eee3"/>
+  </g>
+  <g filter="url(#blur-far)" fill="#2e6766" opacity=".85">
+    <ellipse cx="200" cy="760" rx="420" ry="220"/>
+    <ellipse cx="900" cy="800" rx="520" ry="230"/>
+    <ellipse cx="1500" cy="740" rx="380" ry="240"/>
+  </g>
+  <g filter="url(#blur-mid)" fill="#5f7f4e" opacity=".75">
+    <use href="#leaf" transform="translate(80 720) rotate(-40) scale(1.6)"/>
+    <use href="#leaf" transform="translate(240 820) rotate(-70) scale(1.4)"/>
+    <use href="#leaf" transform="translate(1380 760) rotate(-150) scale(1.7)"/>
+    <use href="#leaf" transform="translate(1520 640) rotate(-120) scale(1.3)"/>
+    <use href="#leaf" transform="translate(760 880) rotate(-80) scale(1.5)"/>
+  </g>
+  <g stroke="#3f6a3a" stroke-width="4" fill="none" opacity=".8">
+    <path d="M330 900C320 800 340 700 300 600"/>
+    <path d="M420 900C430 780 460 690 500 610"/>
+    <path d="M1180 900C1170 790 1210 700 1190 590"/>
+    <path d="M1270 900C1290 800 1320 720 1370 660"/>
+  </g>
+  <g fill="#f6efe2" opacity=".92">
+    <use href="#flower" transform="translate(300 600)"/>
+    <use href="#flower" transform="translate(500 610) scale(.8)"/>
+    <use href="#flower" transform="translate(1190 590) scale(1.1)"/>
+    <use href="#flower" transform="translate(1370 660) scale(.75)"/>
+  </g>
+  <g fill="#c99a2e">
+    <circle cx="300" cy="600" r="11"/><circle cx="500" cy="610" r="9"/>
+    <circle cx="1190" cy="590" r="12"/><circle cx="1370" cy="660" r="8"/>
+  </g>
+  <g fill="#5f7f4e">
+    <use href="#leaf" transform="translate(322 720) rotate(-30) scale(.6)"/>
+    <use href="#leaf" transform="translate(1185 720) rotate(-150) scale(.6)"/>
+  </g>
+  <rect width="1600" height="900" fill="#1d4746" opacity=".18"/>
+</svg>

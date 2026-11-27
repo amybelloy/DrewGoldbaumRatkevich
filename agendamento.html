@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agendamento — Drew Goldbaum Ratkevich</title>
+  <meta name="description" content="Escolha data, horário e modalidade e envie sua solicitação de agendamento.">
+  <meta name="theme-color" content="#6b1d33">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/agendamento.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Drew Goldbaum Ratkevich — página inicial">
+        <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M20 36V14"/><path d="M20 22c-6 0-10-4-11-10 6 0 10 4 11 10Z" fill="currentColor" fill-opacity=".18"/><path d="M20 17c5 0 9-3.4 10-9-5 0-9 3.4-10 9Z" fill="currentColor" fill-opacity=".18"/><path d="M20 29c4.5 0 7.5-2.6 8.3-6.8-4.5 0-7.5 2.6-8.3 6.8Z" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="9" r="3.2"/></svg>
+        <span class="brand-text"><span class="brand-name">Drew Ratkevich</span><span class="brand-sub">Saúde mental</span></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="profissionais.html">Profissionais</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+        <a class="btn btn--mustard nav-cta" href="agendamento.html">Agendar sessão</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--mustard" href="contato.html">Contato</a>
+        <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+    <section class="page-banner" aria-labelledby="ag-title">
+      <div class="container">
+        <span class="eyebrow eyebrow--light">Agendamento</span>
+        <h1 id="ag-title">Agende sua sessão</h1>
+        <p>Escolha a data, o horário e a modalidade. Revise tudo antes de enviar.</p>
+      </div>
+    </section>
+
+    <section class="section--tight profile-page" data-scheduler>
+      <div class="container">
+        <ol class="stepper" aria-label="Etapas do agendamento">
+          <li class="is-active" aria-current="step">Data e horário</li>
+          <li>Seus dados</li>
+          <li>Revisão</li>
+          <li>Solicitação</li>
+        </ol>
+
+        <div class="schedule-layout">
+          <div class="profile-card">
+
+            <!-- Etapa 1 -->
+            <div class="step-panel is-active" data-step="1">
+              <h2>1. Escolha a data e o horário</h2>
+              <div class="field pro-picker">
+                <label for="s-pro">Profissional</label>
+                <select class="select" id="s-pro"></select>
+              </div>
+              <p class="booking-meta">
+                <span id="s-tz">Fuso horário</span>
+                <span class="dot" aria-hidden="true"></span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="s-duration">Sessão</span></span>
+              </p>
+              <div class="calendar">
+                <div class="calendar-head">
+                  <button class="pager-btn" type="button" id="cal-prev" aria-label="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+                  <h3 id="cal-title" aria-live="polite"></h3>
+                  <button class="pager-btn" type="button" id="cal-next" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+                </div>
+                <div class="calendar-grid" id="cal-grid"></div>
+              </div>
+              <div class="slots-area">
+                <h3 id="slots-title">Horários disponíveis</h3>
+                <div class="slots-grid" id="slots-grid" aria-live="polite"></div>
+              </div>
+              <div class="alert alert--error mt-20" id="step1-error" hidden role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8.5v.5"/></svg><span></span></div>
+              <div class="step-actions">
+                <a class="btn btn--outline" href="profissionais.html">Voltar aos profissionais</a>
+                <button class="btn btn--wine" type="button" id="to-step-2">Continuar</button>
+              </div>
+            </div>
+
+            <!-- Etapa 2 -->
+            <form class="step-panel" data-step="2" id="patient-form" novalidate>
+              <h2>2. Seus dados</h2>
+              <div class="form-grid">
+                <div class="field span-2">
+                  <label for="p-nome">Nome completo *</label>
+                  <input class="input" id="p-nome" name="nome" autocomplete="name" data-validate="required name">
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="p-email">E-mail *</label>
+                  <input class="input" id="p-email" name="email" type="email" autocomplete="email" data-validate="required email">
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="p-tel">Telefone *</label>
+                  <input class="input" id="p-tel" name="telefone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(00) 00000-0000" data-mask="phone" data-validate="required phone">
+                  <span class="field-error"></span>
+                </div>
+                <fieldset class="field span-2 fieldset-reset">
+                  <legend class="field-label legend-gap">Modalidade de atendimento *</legend>
+                  <div class="modality-options" id="modality-options"></div>
+                  <span class="field-error" id="modality-error"></span>
+                </fieldset>
+                <div class="field span-2">
+                  <label for="p-motivo">O que te traz à consulta? (opcional)</label>
+                  <textarea class="textarea" id="p-motivo" name="motivo" maxlength="600"></textarea>
+                </div>
+                <div class="field span-2">
+                  <label class="checkbox"><input type="checkbox" name="consentimento" data-validate="checked"> Concordo com o uso dos meus dados apenas para esta solicitação de agendamento, conforme a política de privacidade.</label>
+                  <span class="field-error"></span>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="btn btn--outline" type="button" data-go="1">Voltar</button>
+                <button class="btn btn--wine" type="submit">Revisar</button>
+              </div>
+            </form>
+
+            <!-- Etapa 3 -->
+            <div class="step-panel" data-step="3">
+              <h2>3. Revise sua solicitação</h2>
+              <dl class="review-list" id="review-list"></dl>
+              <div class="alert alert--info mt-20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8.5v.5"/></svg><span>Esta é uma demonstração: a solicitação fica salva somente neste navegador e não é enviada à profissional.</span></div>
+              <div class="step-actions">
+                <button class="btn btn--outline" type="button" data-go="2">Editar dados</button>
+                <button class="btn btn--dark" type="button" id="confirm">Agendar sessão</button>
+              </div>
+            </div>
+
+            <!-- Etapa 4 -->
+            <div class="step-panel" data-step="4">
+              <div class="confirmation">
+                <div class="confirmation-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+                <h2>Solicitação registrada</h2>
+                <p id="confirm-when"></p>
+                <p>Código: <span class="code" id="confirm-code"></span></p>
+                <p class="muted">Demonstração: nenhuma consulta foi marcada e nenhum dado foi enviado. Em produção, a confirmação dependeria da profissional e de um sistema de agenda real.</p>
+                <p class="alert alert--error" id="confirm-storage" hidden>Não foi possível salvar neste navegador (armazenamento bloqueado).</p>
+                <div class="step-actions step-actions--center">
+                  <button class="btn btn--outline" type="button" id="new-request">Nova solicitação</button>
+                  <a class="btn btn--wine" href="index.html">Voltar ao início</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="requests" id="requests" hidden>
+              <h3 class="field-label">Solicitações salvas neste navegador</h3>
+              <div id="requests-list"></div>
+            </div>
+          </div>
+
+          <aside class="profile-card summary-card" aria-labelledby="sum-title">
+            <h2 id="sum-title">Resumo</h2>
+            <div class="summary-pro" id="summary-pro"></div>
+            <ul class="summary-rows" id="summary-rows"></ul>
+            <p class="mt-20"><a class="text-link" id="summary-profile" href="perfil-profissional.html">Ver perfil</a></p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand" href="index.html">
+          <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M20 36V14"/><path d="M20 22c-6 0-10-4-11-10 6 0 10 4 11 10Z" fill="currentColor" fill-opacity=".18"/><path d="M20 17c5 0 9-3.4 10-9-5 0-9 3.4-10 9Z" fill="currentColor" fill-opacity=".18"/><path d="M20 29c4.5 0 7.5-2.6 8.3-6.8-4.5 0-7.5 2.6-8.3 6.8Z" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="9" r="3.2"/></svg>
+          <span class="brand-text"><span class="brand-name">Drew Ratkevich</span><span class="brand-sub">Saúde mental</span></span>
+        </a>
+        <p class="footer-about">Cuidado psiquiátrico holístico, acolhedor e baseado em evidências, com agendamento simples e transparente.</p>
+        <div class="social">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram (abre em nova aba)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn (abre em nova aba)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9h3.5v11H4V9Zm1.8-5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM9.5 9h3.3v1.6c.5-.9 1.7-1.9 3.5-1.9 3.6 0 4.2 2.3 4.2 5.4V20H17v-5.2c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V20H9.5V9Z"/></svg></a>
+          <a href="contato.html" aria-label="Fale conosco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6 8.5 7 8.5-7"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="profissionais.html">Profissionais</a></li>
+          <li><a href="perfil-profissional.html?id=drew">Perfil de Drew</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Institucional</h4>
+        <ul>
+          <li><a href="sobre.html">Sobre a plataforma</a></li>
+          <li><a href="sobre.html#privacidade">Segurança e privacidade</a></li>
+          <li><a href="contato.html#faq">Perguntas frequentes</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          <li>contato@exemplo.com.br</li>
+          <li>Atendimento virtual</li>
+          <li>Seg. a sex., 9h às 18h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© <span data-year></span> Drew Goldbaum Ratkevich. Todos os direitos reservados.</p>
+      <p>Demonstração frontend. Em caso de emergência, procure o serviço de emergência mais próximo ou ligue 192 / CVV 188.</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/agendamento.js"></script>
+</body>
+</html>

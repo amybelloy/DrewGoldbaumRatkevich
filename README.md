@@ -1,12 +1,12 @@
-# Drew Goldbaum Ratkevich — Site de agendamento
+# Drew Goldbaum-Ratkevich, NP — Site pessoal
 
-Site institucional e de agendamento de consultas em saúde mental, feito com **HTML5, CSS3 e JavaScript puro** (sem frameworks).
+Site institucional de Drew Goldbaum-Ratkevich, NP, enfermeira de saúde mental psiquiátrica (PMHNP-BC). Feito com **HTML5, CSS3 e JavaScript puro**, sem frameworks.
 
-> **Demonstração frontend.** Nenhum dado é enviado a servidores: as solicitações de agendamento, as mensagens de contato e o plano de saúde informado ficam salvos apenas no navegador (`localStorage`). Nenhuma consulta é confirmada, e o site não faz pagamentos nem consulta convênios.
+> **Versão demonstrativa (somente frontend).** Os formulários de agendamento e de contato **não enviam** dados. As solicitações ficam salvas só no navegador (`localStorage`), e o site avisa isso ao visitante. Os horários exibidos também são demonstrativos.
 
 ## Como abrir
 
-Abra o `index.html` no navegador. Também é possível servir a pasta localmente:
+Abra o `index.html` no navegador ou sirva a pasta localmente:
 
 ```bash
 python3 -m http.server 8000
@@ -18,27 +18,31 @@ Depois acesse `http://localhost:8000`.
 
 | Arquivo | Conteúdo |
 | --- | --- |
-| `index.html` | Banner, busca, profissionais em destaque, categorias, como funciona, depoimentos ilustrativos |
-| `profissionais.html` | Catálogo com busca e filtros por especialidade, modalidade e localização |
-| `perfil-profissional.html` | Perfil completo (`?id=drew`) com painel de agendamento fixo na lateral |
-| `agendamento.html` | Fluxo em 4 etapas: data e horário → dados → revisão → solicitação |
-| `sobre.html` | Objetivo, funcionamento, diferenciais, qualidade, segurança e privacidade |
-| `contato.html` | Formulário validado, informações de contato e perguntas frequentes |
+| `index.html` | Banner, apresentação, avaliação, frase inspiradora, abordagem, especialidades, como funciona, chamada para agendamento |
+| `sobre.html` | Perfil completo: formação, certificação, licença, experiência, missão, abordagem, seguros, detalhes de cuidados, avaliações e painel de agendamento fixo na lateral |
+| `servicos.html` | 12 especialidades e serviços, métodos terapêuticos e público atendido |
+| `agendamento.html` | Calendário, horários, duração, modalidade, formulário e confirmação demonstrativa |
+| `faq.html` | Perguntas frequentes em acordeão, com busca e filtro por tema |
+| `contato.html` | Formulário, e-mail, WhatsApp, redes sociais e informações de atendimento |
+| `blog.html` | Artigos com filtro por categoria e leitura em janela; seção **Recursos** (`#recursos`) com respiração guiada e contatos de crise |
 
 ## Estrutura
 
 ```
-css/   style.css (global) · responsive.css · agendamento.css (perfil e agendamento)
-js/    data.js (dados e agenda) · main.js (global) · profissionais.js · perfil.js · agendamento.js
-assets/images/   ilustrações botânicas e retrato provisório (SVG)
-assets/icons/    favicon
+css/      style.css (componentes e páginas) · responsive.css (tablets e celulares)
+js/       main.js (comum a todas as páginas) · agendamento.js · faq.js · contato.js
+assets/   images/ (foto, banners e capas) · icons/ (favicon) · logo/ (logotipo)
 ```
 
-## O que substituir antes de publicar
+## Antes de publicar
 
-- **Retrato:** `assets/images/drew-retrato.svg` é uma ilustração provisória. Coloque a foto real (por exemplo, `drew-retrato.jpg`) e atualize o caminho em `js/data.js`, `index.html` e `sobre.html`.
-- **Fotografias:** `hero-jardim.svg`, `folhagem.svg` e `flores.svg` são ilustrações. Podem ser trocadas por fotos de flores e jardins com o mesmo nome de arquivo, atualizando a extensão nos arquivos CSS e HTML.
-- **Contatos:** e-mail, telefone e redes sociais no rodapé e em `contato.html` são provisórios.
-- **Dados do perfil:** em `js/data.js`. As listas de especialidades que apareciam cortadas nas referências foram mantidas apenas até onde estavam visíveis.
-- **Agenda:** os horários são gerados a partir de `schedule` em `js/data.js`. Para produção, substitua por uma integração com uma agenda real.
-- **Perfis fictícios:** os outros seis profissionais do catálogo são demonstrativos e estão marcados como tal no site. Remova-os de `js/data.js` quando não forem mais necessários.
+1. **WhatsApp e e-mail:** preencha `CONFIG.whatsapp` (somente números, com código do país) e `CONFIG.email` no início de `js/main.js`. Enquanto estiverem vazios, os botões de WhatsApp avisam que o número ainda não foi configurado.
+2. **E-mail exibido:** em `contato.html`, o texto `contato@exemplo.com` é substituído automaticamente quando `CONFIG.email` estiver preenchido.
+3. **Redes sociais:** troque os links genéricos do Instagram e do LinkedIn pelos perfis oficiais (rodapé e `contato.html`).
+4. **Agenda:** os horários vêm de `AGENDA` em `js/agendamento.js` (dias da semana, horários, duração de 60 min, modalidade online). Para receber agendamentos reais, integre um sistema de agenda ou um backend.
+5. **Blog:** os seis artigos são exemplos educativos gerais, marcados como tal na página. Revise ou substitua pelos textos da Drew. Cada artigo fica em um `<template id="artigo-…">` no fim do `blog.html`.
+6. **Formas de pagamento:** a FAQ lista apenas os planos de saúde confirmados. Acrescente as demais formas quando forem definidas.
+
+## Origem das informações
+
+Formação, licença, certificação, seguros, especialidades, métodos, idiomas, idades atendidas, textos de apresentação e a avaliação (4,56 em 11 avaliações) vêm do perfil profissional da Drew fornecido como referência. Nenhuma qualificação ou serviço foi acrescentado.

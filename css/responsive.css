@@ -1,100 +1,82 @@
 /* =========================================================
-   Responsividade — notebooks, tablets e celulares
+   Responsividade — notebooks, tablets e smartphones
    ========================================================= */
 
-@media (max-width: 1180px) {
-  .profile-layout { grid-template-columns: minmax(0, 1fr) 380px; }
-  .booking-panel { padding: 22px; }
-  .profile-hero { grid-template-columns: 180px 1fr; }
-}
-
-@media (max-width: 1024px) {
-  :root { --header-h: 68px; }
+/* Notebooks: menu com 8 itens passa para o modo compacto */
+@media (max-width: 1200px) {
+  :root { --header-h: 70px; }
 
   .header-inner { grid-template-columns: auto 1fr auto; }
   .nav-toggle { display: block; }
   .header-actions .btn { display: none; }
 
   .main-nav {
-    position: fixed; inset: var(--header-h) 0 0 0; background: #fff;
-    padding: 40px var(--gutter);
+    position: fixed; inset: var(--header-h) 0 0 0; z-index: 99;
+    padding: 28px var(--gutter) 40px; background: #fff; overflow-y: auto;
     transform: translateX(100%); visibility: hidden;
     transition: transform .4s var(--ease), visibility .4s;
-    overflow-y: auto;
   }
   .main-nav.is-open { transform: none; visibility: visible; }
   .main-nav ul { flex-direction: column; gap: 0; }
   .main-nav li { border-bottom: 1px solid var(--line); }
   .main-nav a {
-    display: block; padding: 20px 0; font-family: var(--font-serif); font-size: 1.8rem;
-    letter-spacing: 0; text-transform: none; color: var(--wine);
+    display: block; padding: 16px 0;
+    font-family: var(--font-serif); font-size: 1.7rem; letter-spacing: 0; text-transform: none; color: var(--wine);
   }
   .main-nav a::after { display: none; }
-  .main-nav .nav-cta { display: inline-flex; margin-top: 32px; }
+  .main-nav .nav-extra { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
   body.nav-open { overflow: hidden; }
 
-  .pro-grid { grid-template-columns: repeat(2, 1fr); }
-  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .profile-layout { grid-template-columns: minmax(0, 1fr) 380px; }
+  .booking-panel { padding: 22px; }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .profile-layout { grid-template-columns: minmax(0, 1fr); }
+  .booking-aside { position: static; }
+  .schedule-layout, .contact-layout { grid-template-columns: minmax(0, 1fr); }
+  .service-grid, .blog-grid, .resource-grid { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); row-gap: 48px; }
   .steps li:nth-child(2)::after { display: none; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
-
-  .profile-layout { grid-template-columns: 1fr; }
-  .booking-aside { position: static; order: -1; }
-  .profile-main { order: 0; }
-  .schedule-layout { grid-template-columns: 1fr; }
-  .schedule-layout .summary-card { order: -1; }
-}
-
-@media (min-width: 1025px) {
-  .main-nav .nav-cta { display: none; }
+  .intro-card { grid-template-columns: 300px 1fr; }
 }
 
 @media (max-width: 860px) {
-  .editorial-grid, .split, .contact-layout { grid-template-columns: 1fr; }
-  .split--reverse > :first-child { order: 0; }
-  .split-media { max-width: 520px; }
-  .values { grid-template-columns: 1fr; }
-  .search-form { grid-template-columns: 1fr; }
-  .profile-hero { grid-template-columns: 1fr; }
-  .profile-photo { max-width: 360px; }
-  .stepper li { font-size: 0; gap: 0; justify-content: center; }
-  .stepper li::before { font-size: .8rem; }
+  .intro-card { grid-template-columns: 1fr; }
+  .intro-photo { max-width: 380px; }
+  .editorial-grid, .two-col { grid-template-columns: 1fr; }
+  .profile-head { grid-template-columns: 96px minmax(0, 1fr); }
+  .profile-avatar { grid-row: auto; width: 96px; height: 96px; }
+  .profile-actions { grid-column: 1 / -1; }
+  .profile-head { align-items: start; }
+  .profile-tabs ul { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .profile-tabs ul::-webkit-scrollbar { display: none; }
+  .profile-tabs a { white-space: nowrap; }
 }
 
+/* Smartphones */
 @media (max-width: 640px) {
   body { font-size: 15px; }
-  .pro-grid, .category-grid, .footer-grid { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; }
+  .service-grid, .blog-grid, .resource-grid, .steps, .footer-grid, .form-grid, .modality-options { grid-template-columns: 1fr; }
   .steps li::after { display: none; }
-  .form-grid { grid-template-columns: 1fr; }
-  .modality-options { grid-template-columns: 1fr; }
-  .review-list { grid-template-columns: 1fr; }
-  .review-list dt { border-bottom: 0; padding-bottom: 0; }
-  .hero { min-height: 640px; }
-  .hero-content { padding: 90px var(--gutter) 130px; }
-  .search-panel { margin-top: -64px; }
-  .split-media::after { right: -10px; bottom: -10px; }
-  .split-media--mustard::after { left: -10px; }
-  .editorial-mustard { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 0 100%); }
-  .editorial-mustard + .section { margin-top: 0; }
+  .hero { min-height: 600px; }
+  .hero-content { padding: 84px var(--gutter) 110px; }
+  .editorial { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 0 100%); }
+  .editorial + .section { margin-top: 0; }
   .brand-sub { display: none; }
-  .booking-panel { padding: 20px 16px; }
+  .brand-name { font-size: 1.08rem; }
+  .rating-box { grid-template-columns: 1fr; gap: 16px; padding: 20px; }
+  .rating-score { padding: 0 0 16px; border-right: 0; border-bottom: 1px solid #ddd6c8; }
+  .booking-panel { padding: 20px 14px; }
   .day-pager { grid-template-columns: 34px 1fr 34px; gap: 4px; }
   .pager-btn { width: 34px; height: 34px; }
   .day-columns { gap: 6px; }
   .day-head { font-size: .88rem; }
-  .slot { font-size: .86rem; padding: 7px 2px; }
-  .more-providers { padding: 18px; }
-  .modal-dialog { padding: 26px 20px; }
-  .calendar { padding: 12px; }
+  .slot { padding: 7px 2px; font-size: .86rem; }
   .calendar-grid { gap: 3px; }
   .cal-day { font-size: .85rem; }
-}
-
-@media (max-width: 860px) {
-  .filters-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 640px) {
-  .filters-grid { grid-template-columns: 1fr; }
+  .faq-question { font-size: 1.22rem; }
+  .whatsapp-float { right: 14px; bottom: 14px; width: 52px; height: 52px; }
 }

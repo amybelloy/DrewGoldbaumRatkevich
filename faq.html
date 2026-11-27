@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perguntas frequentes | Drew Goldbaum-Ratkevich, NP</title>
+  <meta name="description" content="Primeira consulta, atendimento online, duração, acompanhamento e formas de pagamento.">
+  <meta name="theme-color" content="#6b1d33">
+  <meta property="og:title" content="Perguntas frequentes | Drew Goldbaum-Ratkevich, NP">
+  <meta property="og:description" content="Primeira consulta, atendimento online, duração, acompanhamento e formas de pagamento.">
+  <meta property="og:image" content="assets/images/drew-retrato.jpg">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Drew Goldbaum-Ratkevich, NP, página inicial">
+        <img src="assets/logo/logo.svg" alt="" width="38" height="38">
+        <span class="brand-text"><span class="brand-name">Drew Goldbaum-Ratkevich</span><span class="brand-sub">NP · Saúde mental</span></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="servicos.html">Serviços</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="blog.html#recursos">Recursos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+        <div class="nav-extra">
+          <a class="btn btn--mustard" href="agendamento.html">Agendar consulta</a>
+          <a class="btn btn--whatsapp" href="contato.html" data-whatsapp><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg> WhatsApp</a>
+        </div>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--mustard" href="contato.html">Contato</a>
+        <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+    <section class="page-banner" aria-labelledby="fq-title">
+      <div class="container">
+        <span class="eyebrow eyebrow--light">FAQ</span>
+        <h1 id="fq-title">Perguntas frequentes</h1>
+        <p>Respostas para as dúvidas mais comuns antes de começar.</p>
+      </div>
+    </section>
+
+    <section class="section--tight">
+      <div class="container container--narrow">
+        <div class="faq-tools">
+          <div class="field">
+            <label for="faq-search">Buscar pergunta</label>
+            <input class="input" id="faq-search" type="search" placeholder="Ex.: pagamento, online, duração">
+          </div>
+          <div class="chips" role="group" aria-label="Filtrar por tema">
+            <button class="chip" type="button" data-filter="todas" aria-pressed="true">Todas</button>
+            <button class="chip" type="button" data-filter="consulta" aria-pressed="false">Consulta</button>
+            <button class="chip" type="button" data-filter="atendimento" aria-pressed="false">Atendimento</button>
+            <button class="chip" type="button" data-filter="pagamento" aria-pressed="false">Pagamento</button>
+            <button class="chip" type="button" data-filter="outros" aria-pressed="false">Outros</button>
+          </div>
+        </div>
+        <p class="visually-hidden" id="faq-status" role="status" aria-live="polite"></p>
+        <div class="faq">
+          <div class="faq-item" id="primeira-consulta" data-category="consulta">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="primeira-consulta-a">Como funciona a primeira consulta?</button></h2>
+            <div class="faq-answer" id="primeira-consulta-a" role="region" aria-label="Como funciona a primeira consulta?" hidden><div><p>A primeira consulta é uma avaliação psiquiátrica completa, com duração de 60 minutos. Drew vai conhecer sua história, seus sintomas e seus objetivos. Ao final, vocês definem juntos os próximos passos do cuidado, que podem incluir acompanhamento medicamentoso, psicoterapia breve e estratégias práticas de enfrentamento.</p></div></div>
+          </div>
+          <div class="faq-item" id="online" data-category="atendimento">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="online-a">Os atendimentos são online?</button></h2>
+            <div class="faq-answer" id="online-a" role="region" aria-label="Os atendimentos são online?" hidden><div><p>Sim. Os atendimentos são realizados online, por videochamada. Como a licença de Drew é do estado de Nova York, confirme no primeiro contato se o atendimento é possível a partir do local onde você está.</p></div></div>
+          </div>
+          <div class="faq-item" id="duracao" data-category="consulta">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="duracao-a">Qual é a duração da sessão?</button></h2>
+            <div class="faq-answer" id="duracao-a" role="region" aria-label="Qual é a duração da sessão?" hidden><div><p>As sessões têm duração de 60 minutos.</p></div></div>
+          </div>
+          <div class="faq-item" id="acompanhamento" data-category="atendimento">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="acompanhamento-a">Como funciona o acompanhamento?</button></h2>
+            <div class="faq-answer" id="acompanhamento-a" role="region" aria-label="Como funciona o acompanhamento?" hidden><div><p>Depois da avaliação inicial, as consultas de acompanhamento servem para observar a evolução, ajustar o tratamento e, quando houver medicação, acompanhar os efeitos com atenção. A frequência é definida em conjunto, de acordo com suas necessidades.</p></div></div>
+          </div>
+          <div class="faq-item" id="pagamento" data-category="pagamento">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="pagamento-a">Quais formas de pagamento são aceitas?</button></h2>
+            <div class="faq-answer" id="pagamento-a" role="region" aria-label="Quais formas de pagamento são aceitas?" hidden><div><p>Drew aceita os planos Aetna, Anthem Blue Cross and Blue Shield, Carelon Behavioral Health, Cigna, Curative, Oscar, Oxford, Providence Health Plan e United Healthcare. A cobertura depende do seu plano. Informações sobre pagamento particular e outras formas de pagamento são passadas diretamente no primeiro contato.</p></div></div>
+          </div>
+          <div class="faq-item" id="medicacao" data-category="atendimento">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="medicacao-a">Vou precisar tomar medicação?</button></h2>
+            <div class="faq-answer" id="medicacao-a" role="region" aria-label="Vou precisar tomar medicação?" hidden><div><p>Não necessariamente. A gestão de medicação é uma das formas de cuidado oferecidas, mas a indicação depende da avaliação e é sempre uma decisão compartilhada, explicada com clareza.</p></div></div>
+          </div>
+          <div class="faq-item" id="idades" data-category="atendimento">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="idades-a">Quem pode ser atendido?</button></h2>
+            <div class="faq-answer" id="idades-a" role="region" aria-label="Quem pode ser atendido?" hidden><div><p>O atendimento é voltado para adultos e idosos, em inglês.</p></div></div>
+          </div>
+          <div class="faq-item" id="remarcar" data-category="consulta">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="remarcar-a">Posso remarcar ou cancelar uma consulta?</button></h2>
+            <div class="faq-answer" id="remarcar-a" role="region" aria-label="Posso remarcar ou cancelar uma consulta?" hidden><div><p>Sim. A política de remarcação e cancelamento é informada na confirmação da consulta. Se precisar mudar algo, entre em contato o quanto antes pelo formulário ou pelo WhatsApp.</p></div></div>
+          </div>
+          <div class="faq-item" id="emergencia" data-category="outros">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="emergencia-a">O que fazer em uma emergência?</button></h2>
+            <div class="faq-answer" id="emergencia-a" role="region" aria-label="O que fazer em uma emergência?" hidden><div><p>Este site e os agendamentos não são serviços de emergência. Em caso de crise, procure o pronto-socorro mais próximo. Nos EUA, ligue ou envie mensagem para <strong>988</strong>; no Brasil, ligue <strong>188</strong> (CVV) ou <strong>192</strong> (SAMU).</p></div></div>
+          </div>
+          <div class="faq-item" id="privacidade" data-category="outros">
+            <h2 class="faq-heading"><button class="faq-question" type="button" aria-expanded="false" aria-controls="privacidade-a">Meus dados ficam protegidos?</button></h2>
+            <div class="faq-answer" id="privacidade-a" role="region" aria-label="Meus dados ficam protegidos?" hidden><div><p>Sim. O que é conversado nas consultas é protegido pelo sigilo profissional. Os formulários deste site pedem apenas as informações necessárias para o contato.</p></div></div>
+          </div>
+          <p class="faq-empty" id="faq-empty" hidden>Nenhuma pergunta encontrada. <a class="link-underline" href="contato.html">Envie sua dúvida</a>.</p>
+        </div>
+        <div class="card mt-32 center">
+          <h2>Ainda tem dúvidas?</h2>
+          <p class="muted">Envie uma mensagem ou converse pelo WhatsApp.</p>
+          <div class="hero-actions">
+            <a class="btn btn--wine" href="contato.html">Enviar mensagem</a>
+            <a class="btn btn--whatsapp" href="contato.html" data-whatsapp><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg> WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <a class="whatsapp-float" href="contato.html" data-whatsapp aria-label="Conversar pelo WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand" href="index.html" aria-label="Drew Goldbaum-Ratkevich, NP, página inicial">
+        <img src="assets/logo/logo.svg" alt="" width="38" height="38">
+        <span class="brand-text"><span class="brand-name">Drew Goldbaum-Ratkevich</span><span class="brand-sub">NP · Saúde mental</span></span>
+      </a>
+        <p class="footer-about">Cuidado psiquiátrico holístico, colaborativo e baseado em evidências, com atendimento online e acolhedor.</p>
+        <div class="social">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram (abre em nova aba)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn (abre em nova aba)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9h3.5v11H4V9Zm1.8-5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM9.5 9h3.3v1.6c.5-.9 1.7-1.9 3.5-1.9 3.6 0 4.2 2.3 4.2 5.4V20H17v-5.2c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V20H9.5V9Z"/></svg></a>
+          <a href="contato.html" data-whatsapp aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg></a>
+        </div>
+      </div>
+      <nav aria-labelledby="f-nav">
+        <h2 id="f-nav">Navegação</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="servicos.html">Serviços</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-res">
+        <h2 id="f-res">Conteúdo</h2>
+        <ul>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="blog.html#recursos">Recursos</a></li>
+          <li><a href="faq.html">Perguntas frequentes</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Atendimento</h2>
+        <ul>
+          <li>Online, por videochamada</li>
+          <li>Licença: Nova York (NP)</li>
+          <li>Sessões de 60 minutos</li>
+          <li><a href="agendamento.html">Solicitar agendamento →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© <span data-year></span> Drew Goldbaum-Ratkevich, NP. Todos os direitos reservados.</p>
+      <p>Este site não substitui atendimento de emergência. Em crise, ligue 988 (EUA) ou 188 / 192 (Brasil).</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/faq.js"></script>
+</body>
+</html>

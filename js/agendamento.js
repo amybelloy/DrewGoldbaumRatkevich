@@ -1,86 +1,202 @@
 /* =========================================================
-   Página de agendamento em 4 etapas:
-   1. Data e horário  2. Seus dados  3. Revisão  4. Solicitação registrada
-   Demonstração frontend: nada é enviado a um servidor.
+   agendamento.js
+   - Agenda DEMONSTRATIVA (substituir por integração real)
+   - Painel compacto de 3 dias (página Sobre), como nas referências
+   - Página de agendamento: calendário, horários, modalidade,
+     formulário e confirmação demonstrativa
    ========================================================= */
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var App = window.App, DGR = window.DGR, I = DGR.ICONS, esc = DGR.escapeHTML;
+  /* ---------- Configuração da agenda demonstrativa ----------
+     Dias da semana: 0 = domingo ... 6 = sábado. Horários no fuso do visitante. */
+  var AGENDA = {
+    sessionMinutes: 60,
+    modalities: { online: true, presencial: false },
+    weekly: {
+      2: ["11:00", "11:30", "12:30", "20:00"],
+      3: ["12:00", "18:30"],
+      4: ["09:00", "14:00", "19:00"]
+    },
+    daysAhead: 90
+  };
+
+  var STORAGE_KEY = "dgr_solicitacoes";
+  var WEEKDAYS = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+  var WEEKDAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  var MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  var ICON_VIDEO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="7" width="13" height="10" rx="1.5"/><path d="m15.5 10.5 6-3v9l-6-3"/></svg>';
+
+  /* ---------- Datas ---------- */
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function toISO(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function fromISO(s) {
+    var p = String(s).split("-");
+    var d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return isNaN(d) ? null : d;
+  }
+  function startOfToday() { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+  function longDate(d) { return WEEKDAYS[d.getDay()] + ", " + d.getDate() + " de " + MONTHS[d.getMonth()] + " de " + d.getFullYear(); }
+  function fmtTime(t) { var p = t.split(":"); return p[1] === "00" ? +p[0] + "h" : t; }
+  function tzLabel() {
+    var off = -new Date().getTimezoneOffset() / 60;
+    var abs = Math.abs(off), h = Math.floor(abs), m = Math.round((abs - h) * 60);
+    return "Fuso horário " + (off >= 0 ? "+" : "-") + pad(h) + (m ? ":" + pad(m) : "");
+  }
+
+  /* ---------- Disponibilidade ---------- */
+  function hash(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  }
+  function getRequests() { return window.App.storeGet(STORAGE_KEY, []); }
+  function saveRequests(list) { return window.App.storeSet(STORAGE_KEY, list); }
+
+  function slotsFor(date) {
+    var base = AGENDA.weekly[date.getDay()];
+    var today = startOfToday();
+    var limit = new Date(today); limit.setDate(limit.getDate() + AGENDA.daysAhead);
+    if (!base || date < today || date > limit) return [];
+    var iso = toISO(date);
+    var booked = getRequests().filter(function (r) { return r.date === iso; }).map(function (r) { return r.time; });
+    var now = new Date();
+    return base.filter(function (time, i) {
+      // Varia a agenda entre semanas de forma determinística (parece uma agenda real)
+      if (i > 0 && hash(iso + time) % 3 === 0) return false;
+      if (booked.indexOf(time) !== -1) return false;
+      if (date.getTime() === today.getTime()) {
+        var t = time.split(":");
+        if (+t[0] * 60 + +t[1] <= now.getHours() * 60 + now.getMinutes() + 60) return false;
+      }
+      return true;
+    });
+  }
+
+  function availableDays(count) {
+    var out = [], d = startOfToday();
+    for (var i = 0; i <= AGENDA.daysAhead && out.length < count; i++) {
+      var s = slotsFor(d);
+      if (s.length) out.push({ date: new Date(d), iso: toISO(d), slots: s });
+      d.setDate(d.getDate() + 1);
+    }
+    return out;
+  }
+
+  function slotButton(iso, time, selected, label) {
+    return '<button type="button" class="slot' + (selected ? " is-selected" : "") + '" data-iso="' + iso + '" data-time="' + time +
+      '" aria-pressed="' + selected + '"' + (label ? ' aria-label="' + label + '"' : "") + ">" +
+      '<span class="slot-row">' + fmtTime(time) + ICON_VIDEO + "</span>" +
+      '<span class="slot-duration">' + AGENDA.sessionMinutes + " minutos</span></button>";
+  }
+
+  /* =========================================================
+     Painel compacto de 3 dias (Sobre)
+     ========================================================= */
+  function initMiniBooking(App) {
+    var root = App.$("#mini-booking");
+    if (!root) return;
+    var days = availableDays(30);
+    var page = 0, PER = 3;
+    var selected = days.length ? { iso: days[0].iso, time: days[0].slots[0] } : null;
+    var cols = App.$("#mb-days", root), prev = App.$("#mb-prev", root), next = App.$("#mb-next", root);
+    var book = App.$("#mb-book", root), hint = App.$("#mb-hint", root);
+
+    App.$("#mb-tz", root).textContent = tzLabel();
+    App.$("#mb-duration", root).textContent = "Sessão de " + AGENDA.sessionMinutes + " minutos";
+
+    function head(d) {
+      var wd = d.getDay() === 3 ? "Qua" : WEEKDAYS[d.getDay()]; // como nas referências
+      return "<strong>" + wd + "</strong>" + d.getDate() + " de<br>" + MONTHS[d.getMonth()];
+    }
+
+    function render() {
+      if (!days.length) {
+        cols.innerHTML = '<p class="no-slots no-slots--full">Sem horários nas próximas semanas.</p>';
+        prev.disabled = next.disabled = book.disabled = true;
+        return;
+      }
+      cols.innerHTML = days.slice(page * PER, page * PER + PER).map(function (day) {
+        return '<div class="day-col" role="group" aria-label="' + longDate(day.date) + '"><div class="day-head">' + head(day.date) + "</div>" +
+          day.slots.map(function (t) {
+            return slotButton(day.iso, t, !!selected && selected.iso === day.iso && selected.time === t, longDate(day.date) + ", " + fmtTime(t));
+          }).join("") + "</div>";
+      }).join("");
+      prev.disabled = page === 0;
+      next.disabled = (page + 1) * PER >= days.length;
+      book.disabled = !selected;
+      hint.textContent = selected ? longDate(fromISO(selected.iso)) + " às " + fmtTime(selected.time) : "Selecione um horário para continuar.";
+    }
+
+    cols.addEventListener("click", function (e) {
+      var b = e.target.closest(".slot");
+      if (!b) return;
+      var same = selected && selected.iso === b.dataset.iso && selected.time === b.dataset.time;
+      selected = same ? null : { iso: b.dataset.iso, time: b.dataset.time };
+      render();
+      var again = cols.querySelector('[data-iso="' + b.dataset.iso + '"][data-time="' + b.dataset.time + '"]');
+      if (again) again.focus();
+    });
+    prev.addEventListener("click", function () { if (page > 0) { page--; render(); } });
+    next.addEventListener("click", function () { if ((page + 1) * PER < days.length) { page++; render(); } });
+    book.addEventListener("click", function () {
+      if (!selected) return;
+      location.href = "agendamento.html?" + new URLSearchParams({ data: selected.iso, hora: selected.time }).toString() + "#formulario";
+    });
+    render();
+  }
+
+  /* =========================================================
+     Página de agendamento
+     ========================================================= */
+  function initScheduler(App) {
     var root = App.$("[data-scheduler]");
     if (!root) return;
 
     var params = new URLSearchParams(location.search);
-    var state = {
-      step: 1,
-      pro: DGR.findPro(params.get("pro")) || DGR.findPro("drew"),
-      iso: params.get("data") || null,
-      time: params.get("hora") || null,
-      modality: null,
-      month: null
-    };
+    var state = { iso: params.get("data"), time: params.get("hora"), modality: null, month: null };
 
-    var proSelect = App.$("#s-pro");
-    var calTitle = App.$("#cal-title");
-    var calGrid = App.$("#cal-grid");
-    var slotsGrid = App.$("#slots-grid");
-    var slotsTitle = App.$("#slots-title");
-    var form = App.$("#patient-form");
+    var calTitle = App.$("#cal-title"), calGrid = App.$("#cal-grid");
+    var slotsGrid = App.$("#slots-grid"), slotsTitle = App.$("#slots-title");
+    var form = App.$("#booking-form"), formArea = App.$("#booking-form-area"), done = App.$("#booking-done");
 
-    /* ---------- Seleção de profissional ---------- */
-    DGR.PROFESSIONALS.forEach(function (p) {
-      var o = document.createElement("option");
-      o.value = p.id;
-      o.textContent = p.name + " — " + p.specialty + (p.demo ? " (demonstrativo)" : "");
-      proSelect.appendChild(o);
-    });
-    proSelect.value = state.pro.id;
-    proSelect.addEventListener("change", function () {
-      state.pro = DGR.findPro(proSelect.value);
-      state.iso = null; state.time = null; state.modality = null;
-      initMonth();
-      renderCalendar(); renderSlots(); renderModalities(); renderSummary();
-    });
-
-    /* ---------- Validação da data/hora vinda da URL ---------- */
-    function validateIncoming() {
+    // Valida data/hora recebidas pela URL
+    (function () {
       if (!state.iso) return;
-      var d = DGR.fromISO(state.iso);
-      if (isNaN(d) || DGR.slotsFor(state.pro, d).indexOf(state.time) === -1) {
-        if (state.time) App.toast("O horário escolhido não está mais disponível. Selecione outro.", "error");
-        if (isNaN(d) || !DGR.slotsFor(state.pro, d).length) state.iso = null;
+      var d = fromISO(state.iso);
+      if (!d || !slotsFor(d).length) { state.iso = null; state.time = null; return; }
+      if (state.time && slotsFor(d).indexOf(state.time) === -1) {
         state.time = null;
+        App.toast("O horário escolhido não está mais disponível. Selecione outro.", "error");
       }
-    }
+    })();
 
     function initMonth() {
-      var base = state.iso ? DGR.fromISO(state.iso) : (DGR.availableDays(state.pro, new Date(), 1, 120)[0] || { date: new Date() }).date;
+      var base = state.iso ? fromISO(state.iso) : ((availableDays(1)[0] || { date: new Date() }).date);
       state.month = new Date(base.getFullYear(), base.getMonth(), 1);
     }
 
-    /* ---------- Calendário ---------- */
+    /* Calendário */
     function renderCalendar() {
-      var m = state.month;
-      var now = new Date();
-      var thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      var limit = new Date(now.getFullYear(), now.getMonth() + 3, 1);
-      calTitle.textContent = App.MONTHS[m.getMonth()] + " de " + m.getFullYear();
-      App.$("#cal-prev").disabled = m <= thisMonth;
-      App.$("#cal-next").disabled = new Date(m.getFullYear(), m.getMonth() + 1, 1) >= limit;
+      var m = state.month, today = startOfToday();
+      var first = new Date(today.getFullYear(), today.getMonth(), 1);
+      var last = new Date(today.getFullYear(), today.getMonth(), 1);
+      last.setMonth(last.getMonth() + Math.ceil(AGENDA.daysAhead / 30));
+      var mName = MONTHS[m.getMonth()];
+      calTitle.textContent = mName.charAt(0).toUpperCase() + mName.slice(1) + " de " + m.getFullYear();
+      App.$("#cal-prev").disabled = m <= first;
+      App.$("#cal-next").disabled = new Date(m.getFullYear(), m.getMonth() + 1, 1) > last;
 
-      var html = App.WEEKDAYS_SHORT.map(function (d) { return '<span class="dow" aria-hidden="true">' + d + "</span>"; }).join("");
-      var first = m.getDay();
-      for (var i = 0; i < first; i++) html += "<span></span>";
-      var daysInMonth = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
-      var todayISO = DGR.toISO(now);
-      for (var day = 1; day <= daysInMonth; day++) {
-        var d = new Date(m.getFullYear(), m.getMonth(), day);
-        var iso = DGR.toISO(d);
-        var available = DGR.slotsFor(state.pro, d).length > 0;
-        var cls = "cal-day" + (available ? " is-available" : "") + (iso === state.iso ? " is-selected" : "") + (iso === todayISO ? " is-today" : "");
-        html += '<button type="button" class="' + cls + '" data-iso="' + iso + '"' + (available ? "" : " disabled") +
-          ' aria-pressed="' + (iso === state.iso) + '" aria-label="' + esc(App.formatLongDate(d)) + (available ? ", com horários" : ", sem horários") + '">' + day + "</button>";
+      var html = WEEKDAYS_SHORT.map(function (d) { return '<span class="dow" aria-hidden="true">' + d + "</span>"; }).join("");
+      for (var i = 0; i < m.getDay(); i++) html += "<span></span>";
+      var total = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+      var todayISO = toISO(today);
+      for (var day = 1; day <= total; day++) {
+        var d = new Date(m.getFullYear(), m.getMonth(), day), iso = toISO(d);
+        var ok = slotsFor(d).length > 0;
+        html += '<button type="button" class="cal-day' + (ok ? " is-available" : "") + (iso === state.iso ? " is-selected" : "") + (iso === todayISO ? " is-today" : "") +
+          '" data-iso="' + iso + '"' + (ok ? "" : " disabled") + ' aria-pressed="' + (iso === state.iso) +
+          '" aria-label="' + longDate(d) + (ok ? ", horários disponíveis" : ", sem horários") + '">' + day + "</button>";
       }
       calGrid.innerHTML = html;
     }
@@ -94,188 +210,136 @@
       var again = calGrid.querySelector('[data-iso="' + state.iso + '"]');
       if (again) again.focus();
     });
-    App.$("#cal-prev").addEventListener("click", function () {
-      state.month = new Date(state.month.getFullYear(), state.month.getMonth() - 1, 1); renderCalendar();
-    });
-    App.$("#cal-next").addEventListener("click", function () {
-      state.month = new Date(state.month.getFullYear(), state.month.getMonth() + 1, 1); renderCalendar();
-    });
+    App.$("#cal-prev").addEventListener("click", function () { state.month = new Date(state.month.getFullYear(), state.month.getMonth() - 1, 1); renderCalendar(); });
+    App.$("#cal-next").addEventListener("click", function () { state.month = new Date(state.month.getFullYear(), state.month.getMonth() + 1, 1); renderCalendar(); });
 
-    /* ---------- Horários ---------- */
+    /* Horários */
     function renderSlots() {
-      App.$("#s-tz").textContent = App.timezoneLabel();
-      App.$("#s-duration").textContent = "Sessão de " + state.pro.sessionMinutes + " minutos";
       if (!state.iso) {
         slotsTitle.textContent = "Horários disponíveis";
         slotsGrid.innerHTML = '<p class="muted">Selecione uma data destacada no calendário.</p>';
         return;
       }
-      var d = DGR.fromISO(state.iso);
-      var slots = DGR.slotsFor(state.pro, d);
-      slotsTitle.textContent = "Horários em " + App.formatLongDate(d).toLowerCase();
-      slotsGrid.innerHTML = slots.map(function (t) {
-        var sel = t === state.time;
-        return '<button type="button" class="slot' + (sel ? " is-selected" : "") + '" data-time="' + t + '" aria-pressed="' + sel + '">' +
-          '<span class="slot-row">' + App.formatTime(t) + I.video + "</span>" +
-          '<span class="slot-duration">' + state.pro.sessionMinutes + " minutos</span></button>";
-      }).join("") || '<p class="muted">Sem horários nesta data.</p>';
+      var d = fromISO(state.iso);
+      slotsTitle.textContent = "Horários em " + longDate(d).toLowerCase();
+      slotsGrid.innerHTML = slotsFor(d).map(function (t) { return slotButton(state.iso, t, t === state.time); }).join("") ||
+        '<p class="muted">Sem horários nesta data.</p>';
     }
-
     slotsGrid.addEventListener("click", function (e) {
       var b = e.target.closest(".slot");
       if (!b) return;
       state.time = state.time === b.dataset.time ? null : b.dataset.time;
+      App.$("#slot-error").textContent = "";
       renderSlots(); renderSummary();
       var again = slotsGrid.querySelector('[data-time="' + b.dataset.time + '"]');
       if (again) again.focus();
     });
 
-    /* ---------- Modalidade ---------- */
+    /* Modalidade */
     function renderModalities() {
-      var wrap = App.$("#modality-options");
-      var desc = { virtual: "Videochamada em plataforma segura.", presencial: "No consultório, no endereço informado pelo(a) profissional." };
-      if (state.pro.modalities.length === 1) state.modality = state.pro.modalities[0];
-      wrap.innerHTML = ["virtual", "presencial"].map(function (m) {
-        var ok = state.pro.modalities.indexOf(m) !== -1;
-        return '<label class="modality-option' + (ok ? "" : " is-disabled") + '">' +
-          '<input type="radio" name="modalidade" value="' + m + '"' + (ok ? "" : " disabled") + (state.modality === m ? " checked" : "") + ">" +
-          "<span><strong>" + DGR.MODALITY_LABEL[m] + "</strong><span>" + (ok ? desc[m] : "Não oferecido por este(a) profissional.") + "</span></span></label>";
+      var info = {
+        online: ["Online", "Videochamada em plataforma segura."],
+        presencial: ["Presencial", "Indisponível no momento."]
+      };
+      var available = Object.keys(AGENDA.modalities).filter(function (k) { return AGENDA.modalities[k]; });
+      if (available.length === 1) state.modality = available[0];
+      App.$("#modality-options").innerHTML = Object.keys(info).map(function (k) {
+        var ok = AGENDA.modalities[k];
+        return '<label class="modality-option' + (ok ? "" : " is-disabled") + '"><input type="radio" name="modalidade" value="' + k + '"' +
+          (ok ? "" : " disabled") + (state.modality === k ? " checked" : "") + "><span><strong>" + info[k][0] + "</strong><span>" + info[k][1] + "</span></span></label>";
       }).join("");
     }
     App.$("#modality-options").addEventListener("change", function (e) {
       if (e.target.name === "modalidade") { state.modality = e.target.value; App.$("#modality-error").textContent = ""; renderSummary(); }
     });
 
-    /* ---------- Resumo lateral ---------- */
+    /* Resumo */
     function renderSummary() {
-      var p = state.pro;
-      var avatar = p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : '<span class="mini-mono" aria-hidden="true">' + esc(DGR.initials(p.name)) + "</span>";
-      App.$("#summary-pro").innerHTML = avatar + "<div><strong>" + esc(p.name) + "</strong><span>" + esc(p.specialty) + "</span></div>";
       var rows = [
-        ["Data", state.iso ? App.formatLongDate(DGR.fromISO(state.iso)) : "—"],
-        ["Horário", state.time ? App.formatTime(state.time) : "—"],
-        ["Duração", p.sessionMinutes + " minutos"],
-        ["Fuso", App.timezoneLabel().replace("Fuso horário ", "GMT")],
-        ["Modalidade", state.modality ? DGR.MODALITY_LABEL[state.modality] : "—"]
+        ["Data", state.iso ? longDate(fromISO(state.iso)) : "Selecione no calendário"],
+        ["Horário", state.time ? fmtTime(state.time) : "—"],
+        ["Duração", AGENDA.sessionMinutes + " minutos"],
+        ["Fuso", tzLabel().replace("Fuso horário ", "GMT")],
+        ["Modalidade", state.modality === "online" ? "Online" : state.modality === "presencial" ? "Presencial" : "—"]
       ];
-      App.$("#summary-rows").innerHTML = rows.map(function (r) {
-        return "<li><span>" + r[0] + "</span><strong>" + esc(r[1]) + "</strong></li>";
-      }).join("");
-      App.$("#summary-profile").href = "perfil-profissional.html?id=" + encodeURIComponent(p.id);
+      App.$("#summary-rows").innerHTML = rows.map(function (r) { return "<li><span>" + r[0] + "</span><strong>" + r[1] + "</strong></li>"; }).join("");
     }
 
-    /* ---------- Etapas ---------- */
-    function goTo(step) {
-      state.step = step;
-      App.$$(".step-panel").forEach(function (panel) { panel.classList.toggle("is-active", +panel.dataset.step === step); });
-      App.$$(".stepper li").forEach(function (li, i) {
-        li.classList.toggle("is-active", i + 1 === step);
-        li.classList.toggle("is-done", i + 1 < step);
-        if (i + 1 === step) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
-      });
-      var heading = App.$('.step-panel[data-step="' + step + '"] h2');
-      if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus({ preventScroll: true }); }
-      root.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    App.$("#to-step-2").addEventListener("click", function () {
-      var err = App.$("#step1-error");
-      if (!state.iso || !state.time) {
-        err.hidden = false;
-        err.querySelector("span").textContent = !state.iso ? "Selecione uma data no calendário." : "Selecione um horário disponível.";
-        return;
-      }
-      err.hidden = true;
-      goTo(2);
-    });
-
+    /* Envio (demonstrativo) */
     App.bindLiveValidation(form);
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var ok = App.validateForm(form);
-      if (!state.modality) { App.$("#modality-error").textContent = "Selecione a modalidade de atendimento."; ok = false; }
-      if (!ok) { App.toast("Revise os campos destacados.", "error"); return; }
-      renderReview();
-      goTo(3);
-    });
-
-    function renderReview() {
-      var d = DGR.fromISO(state.iso);
-      var rows = [
-        ["Profissional", state.pro.name + " — " + state.pro.specialty],
-        ["Data", App.formatLongDate(d)],
-        ["Horário", App.formatTime(state.time) + " (" + App.timezoneLabel().replace("Fuso horário ", "GMT") + ")"],
-        ["Duração", state.pro.sessionMinutes + " minutos"],
-        ["Modalidade", DGR.MODALITY_LABEL[state.modality]],
-        ["Nome", form.nome.value.trim()],
-        ["E-mail", form.email.value.trim()],
-        ["Telefone", form.telefone.value.trim()],
-        ["Motivo", form.motivo.value.trim() || "Não informado"]
-      ];
-      App.$("#review-list").innerHTML = rows.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("");
-    }
-
-    App.$$("[data-go]").forEach(function (b) {
-      b.addEventListener("click", function () { goTo(+b.dataset.go); });
-    });
-
-    App.$("#confirm").addEventListener("click", function () {
-      var d = DGR.fromISO(state.iso);
-      // Revalida: outro agendamento neste navegador pode ter ocupado o horário
-      if (DGR.slotsFor(state.pro, d).indexOf(state.time) === -1) {
+      var ok = true;
+      if (!state.iso || !state.time) {
+        App.$("#slot-error").textContent = !state.iso ? "Selecione uma data no calendário." : "Selecione um horário.";
+        ok = false;
+      }
+      if (!state.modality) { App.$("#modality-error").textContent = "Selecione a modalidade."; ok = false; }
+      var fieldsOk = App.validateForm(form);
+      if (!ok || !fieldsOk) {
+        App.toast("Revise as informações destacadas.", "error");
+        if (!ok && fieldsOk) App.$("#calendar-card").scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      var d = fromISO(state.iso);
+      if (slotsFor(d).indexOf(state.time) === -1) {
         App.toast("Este horário acabou de ficar indisponível. Escolha outro.", "error");
-        state.time = null; renderSlots(); renderSummary(); goTo(1); return;
+        state.time = null; renderSlots(); renderSummary(); return;
       }
       var code = "DGR-" + Date.now().toString(36).toUpperCase().slice(-6);
-      var req = {
-        code: code, proId: state.pro.id, proName: state.pro.name, date: state.iso, time: state.time,
-        minutes: state.pro.sessionMinutes, modality: state.modality,
-        nome: form.nome.value.trim(), email: form.email.value.trim(), telefone: form.telefone.value.trim(),
-        criadoEm: new Date().toISOString()
-      };
-      var list = DGR.getRequests();
-      list.push(req);
-      var saved = DGR.saveRequests(list);
-      App.$("#confirm-code").textContent = code;
-      App.$("#confirm-when").textContent = App.formatLongDate(d) + " às " + App.formatTime(state.time) + " com " + state.pro.name;
-      App.$("#confirm-storage").hidden = saved;
-      goTo(4);
-      renderRequests();
+      var list = getRequests();
+      list.push({
+        code: code, date: state.iso, time: state.time, modality: state.modality, minutes: AGENDA.sessionMinutes,
+        nome: form.nome.value.trim(), email: form.email.value.trim(), telefone: form.telefone.value.trim(), criadoEm: new Date().toISOString()
+      });
+      var saved = saveRequests(list);
+
+      App.$("#done-when").textContent = longDate(d) + " às " + fmtTime(state.time) + " · " + AGENDA.sessionMinutes + " minutos · Online";
+      App.$("#done-code").textContent = code;
+      App.$("#done-storage").hidden = saved;
+      formArea.hidden = true;
+      done.hidden = false;
+      done.focus();
+      renderCalendar(); renderSlots(); renderRequests();
       App.toast("Solicitação demonstrativa registrada.", "success");
     });
 
-    App.$("#new-request").addEventListener("click", function () {
+    App.$("#done-new").addEventListener("click", function () {
       form.reset();
+      App.$$(".field.has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
       state.iso = null; state.time = null;
-      initMonth();
-      renderCalendar(); renderSlots(); renderModalities(); renderSummary();
-      goTo(1);
+      initMonth(); renderCalendar(); renderSlots(); renderModalities(); renderSummary();
+      done.hidden = true; formArea.hidden = false;
+      App.$("#calendar-card").scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    /* ---------- Solicitações salvas ---------- */
+    /* Solicitações salvas neste navegador */
     function renderRequests() {
-      var wrap = App.$("#requests");
-      var list = DGR.getRequests().slice().reverse();
-      if (!list.length) { wrap.hidden = true; return; }
-      wrap.hidden = false;
+      var wrap = App.$("#requests"), list = getRequests().slice().reverse();
+      wrap.hidden = !list.length;
       App.$("#requests-list").innerHTML = list.map(function (r) {
-        return '<div class="request-item"><div><strong>' + esc(r.proName) + "</strong>" +
-          esc(App.formatLongDate(DGR.fromISO(r.date))) + " · " + App.formatTime(r.time) + " · " + esc(DGR.MODALITY_LABEL[r.modality] || "") +
-          ' <span class="muted">(' + esc(r.code) + ")</span></div>" +
-          '<button type="button" class="btn btn--outline" data-cancel="' + esc(r.code) + '">Cancelar</button></div>';
+        var d = fromISO(r.date);
+        return '<div class="request-item"><div><strong>' + (d ? longDate(d) : r.date) + " · " + fmtTime(r.time) + "</strong>" +
+          '<span class="muted">Código ' + r.code + "</span></div>" +
+          '<button type="button" class="btn btn--outline" data-cancel="' + r.code + '">Cancelar</button></div>';
       }).join("");
     }
     App.$("#requests-list").addEventListener("click", function (e) {
       var b = e.target.closest("[data-cancel]");
-      if (!b) return;
-      if (!window.confirm("Remover esta solicitação demonstrativa?")) return;
-      DGR.saveRequests(DGR.getRequests().filter(function (r) { return r.code !== b.dataset.cancel; }));
+      if (!b || !window.confirm("Remover esta solicitação demonstrativa?")) return;
+      saveRequests(getRequests().filter(function (r) { return r.code !== b.dataset.cancel; }));
       renderRequests(); renderCalendar(); renderSlots();
       App.toast("Solicitação removida.", "success");
     });
 
-    validateIncoming();
+    App.$("#s-tz").textContent = tzLabel();
+    App.$("#s-duration").textContent = "Sessão de " + AGENDA.sessionMinutes + " minutos";
     initMonth();
     renderCalendar(); renderSlots(); renderModalities(); renderSummary(); renderRequests();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initMiniBooking(window.App);
+    initScheduler(window.App);
   });
 })();

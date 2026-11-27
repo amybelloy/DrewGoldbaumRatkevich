@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog e recursos | Drew Goldbaum-Ratkevich, NP</title>
+  <meta name="description" content="Artigos e recursos sobre ansiedade, humor, TDAH, sono e bem-estar.">
+  <meta name="theme-color" content="#6b1d33">
+  <meta property="og:title" content="Blog e recursos | Drew Goldbaum-Ratkevich, NP">
+  <meta property="og:description" content="Artigos e recursos sobre ansiedade, humor, TDAH, sono e bem-estar.">
+  <meta property="og:image" content="assets/images/drew-retrato.jpg">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Drew Goldbaum-Ratkevich, NP, página inicial">
+        <img src="assets/logo/logo.svg" alt="" width="38" height="38">
+        <span class="brand-text"><span class="brand-name">Drew Goldbaum-Ratkevich</span><span class="brand-sub">NP · Saúde mental</span></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="servicos.html">Serviços</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="blog.html#recursos">Recursos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+        <div class="nav-extra">
+          <a class="btn btn--mustard" href="agendamento.html">Agendar consulta</a>
+          <a class="btn btn--whatsapp" href="contato.html" data-whatsapp><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg> WhatsApp</a>
+        </div>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--mustard" href="contato.html">Contato</a>
+        <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+    <section class="page-banner" aria-labelledby="bl-title">
+      <div class="container">
+        <span class="eyebrow eyebrow--light">Blog e recursos</span>
+        <h1 id="bl-title">Conteúdos para cuidar de si</h1>
+        <p>Artigos e recursos práticos sobre saúde mental e bem-estar.</p>
+      </div>
+    </section>
+
+    <section class="section--tight" aria-labelledby="posts-title">
+      <div class="container">
+        <h2 id="posts-title" class="visually-hidden">Artigos</h2>
+        <div class="filter-bar" role="group" aria-label="Filtrar artigos por categoria">
+          <button class="chip" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+          <button class="chip" type="button" data-filter="ansiedade" aria-pressed="false">Ansiedade</button>
+          <button class="chip" type="button" data-filter="humor" aria-pressed="false">Humor</button>
+          <button class="chip" type="button" data-filter="tdah" aria-pressed="false">TDAH</button>
+          <button class="chip" type="button" data-filter="sono" aria-pressed="false">Sono</button>
+          <button class="chip" type="button" data-filter="bem-estar" aria-pressed="false">Bem-estar</button>
+        </div>
+        <p class="visually-hidden" id="blog-status" role="status" aria-live="polite"></p>
+        <div class="blog-grid" id="blog-grid">
+          <article class="post-card reveal" data-category="ansiedade">
+            <div class="post-cover"><img src="assets/images/capa-agua.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">Ansiedade</span><time>12 de novembro de 2026</time></p>
+              <h3>Quando a preocupação deixa de ser passageira</h3>
+              <p>Como diferenciar a ansiedade do dia a dia de um quadro que merece atenção profissional.</p>
+              <button class="btn btn--outline" type="button" data-article="ansiedade-sinais">Ler mais</button>
+            </div>
+          </article>
+          <article class="post-card reveal" data-category="sono">
+            <div class="post-cover"><img src="assets/images/capa-lua.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">Sono</span><time>28 de outubro de 2026</time></p>
+              <h3>Sono e saúde mental: uma via de mão dupla</h3>
+              <p>Por que dormir mal afeta o humor e como pequenas mudanças de rotina podem ajudar.</p>
+              <button class="btn btn--outline" type="button" data-article="sono">Ler mais</button>
+            </div>
+          </article>
+          <article class="post-card reveal" data-category="tdah">
+            <div class="post-cover"><img src="assets/images/capa-folha.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">TDAH</span><time>15 de outubro de 2026</time></p>
+              <h3>TDAH na vida adulta</h3>
+              <p>Desatenção, esquecimentos e procrastinação podem ter uma explicação, e um caminho.</p>
+              <button class="btn btn--outline" type="button" data-article="tdah-adultos">Ler mais</button>
+            </div>
+          </article>
+          <article class="post-card reveal" data-category="bem-estar">
+            <div class="post-cover"><img src="assets/images/capa-sol.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">Bem-estar</span><time>30 de setembro de 2026</time></p>
+              <h3>Três minutos para desacelerar</h3>
+              <p>Um exercício simples de respiração para os momentos de tensão.</p>
+              <button class="btn btn--outline" type="button" data-article="respiracao">Ler mais</button>
+            </div>
+          </article>
+          <article class="post-card reveal" data-category="humor">
+            <div class="post-cover"><img src="assets/images/capa-agua.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">Humor</span><time>9 de setembro de 2026</time></p>
+              <h3>Depressão não é falta de força de vontade</h3>
+              <p>Desfazendo mitos comuns e abrindo espaço para o cuidado.</p>
+              <button class="btn btn--outline" type="button" data-article="depressao-mitos">Ler mais</button>
+            </div>
+          </article>
+          <article class="post-card reveal" data-category="bem-estar">
+            <div class="post-cover"><img src="assets/images/capa-folha.svg" alt="" loading="lazy" width="800" height="500"></div>
+            <div class="post-body">
+              <p class="post-meta"><span class="service-tag">Bem-estar</span><time>20 de agosto de 2026</time></p>
+              <h3>Como se preparar para a primeira consulta</h3>
+              <p>Algumas ideias para aproveitar melhor o primeiro encontro.</p>
+              <button class="btn btn--outline" type="button" data-article="primeira-consulta">Ler mais</button>
+            </div>
+          </article>
+        </div>
+        <p class="demo-note">Artigos de exemplo, com conteúdo educativo geral. Eles não substituem uma avaliação profissional e devem ser revisados ou substituídos pelos textos de Drew antes da publicação.</p>
+      </div>
+    </section>
+
+    <section class="section section--white" id="recursos" aria-labelledby="rec-title">
+      <div class="container">
+        <div class="section-head center">
+          <span class="eyebrow">Recursos</span>
+          <h2 id="rec-title">Apoio para o dia a dia</h2>
+        </div>
+        <div class="resource-grid">
+          <div class="card card--shadow breathing" aria-labelledby="br-title">
+            <h3 id="br-title">Respiração guiada</h3>
+            <p class="muted small">Inspire 4 s · segure 4 s · expire 6 s</p>
+            <div class="breathing-circle" id="breath-circle" aria-hidden="true"><span id="breath-label">Pronto</span></div>
+            <button class="btn btn--wine" type="button" id="breath-toggle" aria-pressed="false">Começar</button>
+          </div>
+          <div class="card card--shadow" aria-labelledby="crisis-title">
+            <h3 id="crisis-title">Em uma crise</h3>
+            <p class="muted small">Se você está em risco, procure ajuda imediata:</p>
+            <ul>
+              <li><strong>EUA:</strong> ligue ou envie mensagem para 988 (Suicide &amp; Crisis Lifeline).</li>
+              <li><strong>Brasil:</strong> CVV 188, 24 horas, ou SAMU 192.</li>
+              <li>Ou vá ao pronto-socorro mais próximo.</li>
+            </ul>
+          </div>
+          <div class="card card--shadow" aria-labelledby="prep-title">
+            <h3 id="prep-title">Antes da primeira consulta</h3>
+            <ul>
+              <li>Anote o que tem sentido e há quanto tempo.</li>
+              <li>Liste medicações em uso e tratamentos anteriores.</li>
+              <li>Escolha um lugar reservado e teste sua conexão.</li>
+            </ul>
+            <a class="text-link" href="faq.html">Ver perguntas frequentes</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal" id="article-modal" hidden role="dialog" aria-modal="true" aria-labelledby="article-title">
+      <div class="modal-backdrop" data-close-modal></div>
+      <article class="modal-dialog">
+        <button class="modal-close" type="button" data-close-modal aria-label="Fechar artigo">×</button>
+        <p class="eyebrow" id="article-meta"></p>
+        <h2 id="article-title"></h2>
+        <div class="article-content" id="article-body"></div>
+        <div class="hero-actions mt-20">
+          <a class="btn btn--mustard" href="agendamento.html">Agendar consulta</a>
+          <button class="btn btn--outline" type="button" data-close-modal>Fechar</button>
+        </div>
+      </article>
+    </div>
+
+    <template id="artigo-ansiedade-sinais"><p>Sentir ansiedade diante de um desafio é natural. Ela nos prepara para agir. O sinal de alerta aparece quando a preocupação se torna constante, desproporcional e começa a atrapalhar o sono, o trabalho e as relações.</p><h3>Sinais que merecem atenção</h3><p>Tensão muscular frequente, irritabilidade, dificuldade de concentração, sensação de que algo ruim vai acontecer e evitar situações por medo são alguns exemplos.</p><h3>O que ajuda</h3><p>Uma avaliação cuidadosa permite entender o que está por trás dos sintomas e construir um plano com estratégias práticas de enfrentamento, psicoterapia e, quando indicado, medicação.</p></template>
+    <template id="artigo-sono"><p>O sono e a saúde mental se influenciam o tempo todo: noites mal dormidas intensificam ansiedade e irritabilidade, e o sofrimento emocional, por sua vez, dificulta o descanso.</p><h3>Hábitos que favorecem o descanso</h3><p>Horários regulares, luz natural pela manhã, redução de telas antes de deitar e um ritual tranquilo de fim de dia costumam fazer diferença.</p><h3>Quando procurar ajuda</h3><p>Se a dificuldade para dormir persiste por semanas ou vem acompanhada de mudanças de humor, vale conversar com um profissional de saúde mental.</p></template>
+    <template id="artigo-tdah-adultos"><p>O TDAH não termina na infância. Muitos adultos convivem com dificuldades de foco, organização e gestão do tempo sem saber que existe uma explicação para isso.</p><h3>Como é feita a avaliação</h3><p>A avaliação considera a história de vida, os sintomas atuais e o impacto deles no dia a dia, sempre com cuidado para diferenciar o TDAH de outras condições.</p><h3>Tratamento</h3><p>O cuidado pode combinar estratégias práticas de organização, psicoterapia e, quando indicado, acompanhamento medicamentoso.</p></template>
+    <template id="artigo-respiracao"><p>A respiração é uma das ferramentas mais acessíveis para acalmar o corpo. Ao alongar a expiração, sinalizamos ao sistema nervoso que é seguro desacelerar.</p><h3>Experimente</h3><p>Inspire pelo nariz contando até quatro, segure por quatro e solte o ar devagar contando até seis. Repita por três minutos. Você encontra um guia interativo na seção de recursos desta página.</p></template>
+    <template id="artigo-depressao-mitos"><p>A depressão é uma condição de saúde, não um sinal de fraqueza. Ela pode afetar a energia, o sono, o apetite, a concentração e a capacidade de sentir prazer.</p><h3>O primeiro passo</h3><p>Falar sobre o que você sente com alguém de confiança e buscar uma avaliação profissional são passos importantes. Existe tratamento, e ele é construído de acordo com cada pessoa.</p></template>
+    <template id="artigo-primeira-consulta"><p>Não existe jeito certo de chegar à primeira consulta, mas algumas anotações podem ajudar.</p><h3>Vale anotar</h3><p>O que você tem sentido e há quanto tempo, medicações em uso, histórico de tratamentos anteriores e o que você espera do acompanhamento.</p><h3>Na sessão online</h3><p>Procure um lugar reservado, com boa conexão e fones de ouvido, para conversar com tranquilidade.</p></template>
+
+  </main>
+
+  <a class="whatsapp-float" href="contato.html" data-whatsapp aria-label="Conversar pelo WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand" href="index.html" aria-label="Drew Goldbaum-Ratkevich, NP, página inicial">
+        <img src="assets/logo/logo.svg" alt="" width="38" height="38">
+        <span class="brand-text"><span class="brand-name">Drew Goldbaum-Ratkevich</span><span class="brand-sub">NP · Saúde mental</span></span>
+      </a>
+        <p class="footer-about">Cuidado psiquiátrico holístico, colaborativo e baseado em evidências, com atendimento online e acolhedor.</p>
+        <div class="social">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram (abre em nova aba)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn (abre em nova aba)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9h3.5v11H4V9Zm1.8-5.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM9.5 9h3.3v1.6c.5-.9 1.7-1.9 3.5-1.9 3.6 0 4.2 2.3 4.2 5.4V20H17v-5.2c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V20H9.5V9Z"/></svg></a>
+          <a href="contato.html" data-whatsapp aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.2-.2-.5-.3Z"/></svg></a>
+        </div>
+      </div>
+      <nav aria-labelledby="f-nav">
+        <h2 id="f-nav">Navegação</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="servicos.html">Serviços</a></li>
+          <li><a href="agendamento.html">Agendamento</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-res">
+        <h2 id="f-res">Conteúdo</h2>
+        <ul>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="blog.html#recursos">Recursos</a></li>
+          <li><a href="faq.html">Perguntas frequentes</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Atendimento</h2>
+        <ul>
+          <li>Online, por videochamada</li>
+          <li>Licença: Nova York (NP)</li>
+          <li>Sessões de 60 minutos</li>
+          <li><a href="agendamento.html">Solicitar agendamento →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© <span data-year></span> Drew Goldbaum-Ratkevich, NP. Todos os direitos reservados.</p>
+      <p>Este site não substitui atendimento de emergência. Em crise, ligue 988 (EUA) ou 188 / 192 (Brasil).</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

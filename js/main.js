@@ -1,36 +1,37 @@
 /* =========================================================
-   Scripts globais: navegação, utilidades, formulários,
-   depoimentos, busca da home, contato e FAQ.
+   main.js — scripts compartilhados por todas as páginas
+   - Configuração de contato (edite CONFIG)
+   - Menu responsivo, cabeçalho e animações de entrada
+   - Utilidades: toast, modal, máscara de telefone, validação
+   - WhatsApp, compartilhar/salvar, "Mostrar mais", abas do perfil
+   - Blog: filtros e leitura de artigos; exercício de respiração
    ========================================================= */
 (function () {
   "use strict";
 
-  var DGR = window.DGR || {};
+  /* ---------- Configuração ----------
+     Preencha com os contatos oficiais antes de publicar.
+     whatsapp: somente números, com código do país (ex.: "15551234567"). */
+  var CONFIG = {
+    whatsapp: "",
+    whatsappMessage: "Olá, Drew! Gostaria de mais informações sobre o atendimento.",
+    email: ""
+  };
+
   var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
-  /* ---------- Formatação de datas ---------- */
-  var WEEKDAYS = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-  var WEEKDAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  var MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
-
-  function formatLongDate(d) {
-    return WEEKDAYS[d.getDay()] + ", " + d.getDate() + " de " + MONTHS[d.getMonth()] + " de " + d.getFullYear();
+  /* ---------- Armazenamento local seguro ---------- */
+  function storeGet(key, fallback) {
+    try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch (e) { return fallback; }
   }
-  function formatTime(t) {
-    var p = t.split(":");
-    return p[1] === "00" ? +p[0] + "h" : t;
-  }
-  function timezoneLabel() {
-    var off = -new Date().getTimezoneOffset() / 60;
-    var sign = off >= 0 ? "+" : "-";
-    var abs = Math.abs(off);
-    var h = Math.floor(abs);
-    var m = Math.round((abs - h) * 60);
-    return "Fuso horário " + sign + (h < 10 ? "0" : "") + h + (m ? ":" + (m < 10 ? "0" : "") + m : "");
+  function storeSet(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch (e) { return false; }
   }
 
-  /* ---------- Toasts ---------- */
+  /* ---------- Toasts (feedback visual) ---------- */
   function toast(message, type) {
     var region = $(".toast-region");
     if (!region) {
@@ -44,12 +45,17 @@
     el.className = "toast" + (type ? " toast--" + type : "");
     el.textContent = message;
     region.appendChild(el);
-    setTimeout(function () { el.remove(); }, 4200);
+    setTimeout(function () { el.remove(); }, 4500);
   }
 
-  /* ---------- Máscara de telefone ---------- */
+  /* ---------- Máscara de telefone (BR e internacional) ---------- */
   function maskPhone(value) {
-    var d = value.replace(/\D/g, "").slice(0, 11);
+    var raw = value.trim();
+    if (raw.charAt(0) === "+") {
+      // Internacional: formatos variam por país; apenas remove caracteres inválidos
+      return "+" + raw.slice(1).replace(/[^\d\s()-]/g, "").slice(0, 20);
+    }
+    var d = raw.replace(/\D/g, "").slice(0, 11);
     if (d.length <= 2) return d.length ? "(" + d : "";
     if (d.length <= 6) return "(" + d.slice(0, 2) + ") " + d.slice(2);
     if (d.length <= 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
@@ -61,12 +67,14 @@
     });
   }
 
-  /* ---------- Validação ---------- */
+  /* ---------- Validação de formulários ----------
+     Use data-validate="required email phone name min20 checked" nos campos.
+     O erro aparece no .field-error dentro do mesmo .field. */
   var RULES = {
     required: function (v) { return v.trim() ? "" : "Este campo é obrigatório."; },
     name: function (v) { return v.trim().split(/\s+/).length >= 2 ? "" : "Informe nome e sobrenome."; },
     email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Informe um e-mail válido."; },
-    phone: function (v) { var n = v.replace(/\D/g, ""); return n.length >= 10 && n.length <= 11 ? "" : "Informe um telefone com DDD."; },
+    phone: function (v) { var n = v.replace(/\D/g, ""); return n.length >= 10 && n.length <= 15 ? "" : "Informe um telefone válido, com DDD ou código do país."; },
     min20: function (v) { return v.trim().length >= 20 ? "" : "Escreva ao menos 20 caracteres."; },
     checked: function (v, el) { return el.checked ? "" : "É necessário aceitar para continuar."; }
   };
@@ -75,24 +83,25 @@
     var field = el.closest(".field") || el.parentElement;
     var errorEl = field ? field.querySelector(".field-error") : null;
     var rules = (el.getAttribute("data-validate") || "").split(" ").filter(Boolean);
+    var optional = rules.indexOf("required") === -1 && rules.indexOf("checked") === -1;
     var msg = "";
-    for (var i = 0; i < rules.length && !msg; i++) {
-      var rule = RULES[rules[i]];
-      if (!rule) continue;
-      if (rules[i] !== "required" && rules[i] !== "checked" && !el.value.trim() && rules.indexOf("required") === -1) continue;
-      msg = rule(el.value || "", el);
+    if (!(optional && !el.value.trim())) {
+      for (var i = 0; i < rules.length && !msg; i++) {
+        if (RULES[rules[i]]) msg = RULES[rules[i]](el.value || "", el);
+      }
     }
     if (field) field.classList.toggle("has-error", !!msg);
     el.setAttribute("aria-invalid", msg ? "true" : "false");
-    if (errorEl) errorEl.textContent = msg;
+    if (errorEl) {
+      errorEl.textContent = msg;
+      if (errorEl.id) el.setAttribute("aria-describedby", errorEl.id);
+    }
     return !msg;
   }
 
   function validateForm(form) {
-    var ok = true;
-    var first = null;
+    var ok = true, first = null;
     $$("[data-validate]", form).forEach(function (el) {
-      if (el.closest("[hidden]")) return;
       var valid = validateField(el);
       if (!valid && !first) first = el;
       ok = ok && valid;
@@ -103,8 +112,7 @@
 
   function bindLiveValidation(form) {
     $$("[data-validate]", form).forEach(function (el) {
-      var evt = el.type === "checkbox" ? "change" : "blur";
-      el.addEventListener(evt, function () { validateField(el); });
+      el.addEventListener(el.type === "checkbox" ? "change" : "blur", function () { validateField(el); });
       el.addEventListener("input", function () {
         var field = el.closest(".field");
         if (field && field.classList.contains("has-error")) validateField(el);
@@ -112,16 +120,17 @@
     });
   }
 
-  /* ---------- Modal ---------- */
+  /* ---------- Modal acessível ---------- */
   var lastFocus = null;
   function openModal(modal) {
     lastFocus = document.activeElement;
     modal.hidden = false;
     document.body.style.overflow = "hidden";
-    var focusable = modal.querySelector("input, button:not(.modal-close), select, textarea, a[href]");
-    (focusable || modal.querySelector(".modal-close")).focus();
+    var target = modal.querySelector("[data-autofocus]") || modal.querySelector(".modal-close");
+    if (target) target.focus();
   }
   function closeModal(modal) {
+    if (!modal) return;
     modal.hidden = true;
     document.body.style.overflow = "";
     if (lastFocus) lastFocus.focus();
@@ -132,16 +141,13 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
-    var open = $(".modal:not([hidden])");
-    if (open) closeModal(open);
-    var nav = $(".main-nav.is-open");
-    if (nav) toggleNav(false);
+    closeModal($(".modal:not([hidden])"));
+    toggleNav(false);
   });
 
-  /* ---------- Navegação ---------- */
+  /* ---------- Menu responsivo ---------- */
   function toggleNav(force) {
-    var btn = $(".nav-toggle");
-    var nav = $(".main-nav");
+    var btn = $(".nav-toggle"), nav = $(".main-nav");
     if (!btn || !nav) return;
     var open = typeof force === "boolean" ? force : btn.getAttribute("aria-expanded") !== "true";
     btn.setAttribute("aria-expanded", String(open));
@@ -154,14 +160,29 @@
     var btn = $(".nav-toggle");
     if (btn) btn.addEventListener("click", function () { toggleNav(); });
     $$(".main-nav a").forEach(function (a) { a.addEventListener("click", function () { toggleNav(false); }); });
-    window.addEventListener("resize", function () { if (window.innerWidth > 1024) toggleNav(false); });
+    window.addEventListener("resize", function () { if (window.innerWidth > 1200) toggleNav(false); });
 
-    // Marca o link da página atual
+    // Destaca a página atual no menu
     var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-    if (page === "perfil-profissional.html") page = "profissionais.html";
-    $$(".main-nav a").forEach(function (a) {
-      if ((a.getAttribute("href") || "").toLowerCase() === page) a.setAttribute("aria-current", "page");
+    $$(".main-nav ul a").forEach(function (a) {
+      var href = (a.getAttribute("href") || "").toLowerCase();
+      var isRecursos = href.indexOf("#recursos") !== -1;
+      if (href.split("#")[0] === page && (!isRecursos || location.hash === "#recursos")) a.setAttribute("aria-current", "page");
     });
+    // Em blog.html, "Blog" e "Recursos" alternam conforme a seção visível
+    if (page === "blog.html") {
+      var links = $$('.main-nav ul a[href^="blog.html"]');
+      var recursos = $("#recursos");
+      var sync = function () {
+        var inRecursos = recursos && recursos.getBoundingClientRect().top < window.innerHeight * 0.4;
+        links.forEach(function (a) {
+          var r = a.getAttribute("href").indexOf("#recursos") !== -1;
+          if (r === !!inRecursos) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+        });
+      };
+      window.addEventListener("scroll", sync, { passive: true });
+      sync();
+    }
 
     var header = $(".site-header");
     var onScroll = function () { if (header) header.classList.toggle("is-scrolled", window.scrollY > 8); };
@@ -169,7 +190,7 @@
     onScroll();
   }
 
-  /* ---------- Animação de entrada ---------- */
+  /* ---------- Animações de entrada ---------- */
   function initReveal() {
     var items = $$(".reveal");
     if (!("IntersectionObserver" in window)) { items.forEach(function (el) { el.classList.add("is-visible"); }); return; }
@@ -177,178 +198,190 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) { entry.target.classList.add("is-visible"); io.unobserve(entry.target); }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
     items.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- Depoimentos ---------- */
-  function initTestimonials() {
-    var root = $("[data-testimonials]");
-    if (!root) return;
-    var items = $$(".testimonial", root);
-    var dotsWrap = $(".dots", root);
-    var index = 0;
-    var timer = null;
-
-    items.forEach(function (_, i) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.setAttribute("aria-label", "Depoimento " + (i + 1));
-      b.addEventListener("click", function () { go(i); restart(); });
-      dotsWrap.appendChild(b);
-    });
-
-    function go(i) {
-      index = (i + items.length) % items.length;
-      items.forEach(function (el, j) { el.classList.toggle("is-active", j === index); });
-      $$("button", dotsWrap).forEach(function (b, j) { b.setAttribute("aria-current", j === index ? "true" : "false"); });
-    }
-    function restart() {
-      clearInterval(timer);
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) timer = setInterval(function () { go(index + 1); }, 7000);
-    }
-    $("[data-prev]", root).addEventListener("click", function () { go(index - 1); restart(); });
-    $("[data-next]", root).addEventListener("click", function () { go(index + 1); restart(); });
-    go(0);
-    restart();
-  }
-
-  /* ---------- Busca na página inicial ---------- */
-  function fillSpecialtySelect(select) {
-    if (!select || !DGR.allSpecialties) return;
-    DGR.allSpecialties().forEach(function (s) {
-      var o = document.createElement("option");
-      o.value = s; o.textContent = s;
-      select.appendChild(o);
+  /* ---------- Estrelas de avaliação ---------- */
+  function initStars() {
+    $$("[data-rating]").forEach(function (el) {
+      var value = parseFloat(el.getAttribute("data-rating")) || 0;
+      var fill = el.querySelector("span");
+      if (fill) fill.style.width = Math.max(0, Math.min(100, value / 5 * 100)) + "%";
     });
   }
 
-  function initHomeSearch() {
-    var form = $("#home-search");
-    if (!form) return;
-    fillSpecialtySelect($("#home-specialty", form));
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var params = new URLSearchParams();
-      var q = $("#home-q", form).value.trim();
-      var esp = $("#home-specialty", form).value;
-      if (q) params.set("q", q);
-      if (esp) params.set("especialidade", esp);
-      location.href = "profissionais.html" + (params.toString() ? "?" + params.toString() : "");
-    });
-  }
-
-  /* ---------- Profissionais em destaque (home) ---------- */
-  function proCardHTML(p) {
-    var I = DGR.ICONS;
-    var esc = DGR.escapeHTML;
-    var photo = p.photo
-      ? '<img src="' + esc(p.photo) + '" alt="Retrato de ' + esc(p.name) + '" loading="lazy">'
-      : '<span class="pro-monogram" aria-hidden="true">' + esc(DGR.initials(p.name)) + "</span>";
-    var mods = p.modalities.map(function (m) { return DGR.MODALITY_LABEL[m]; }).join(" · ");
-    return '<article class="pro-card">' +
-      '<div class="pro-photo">' + (p.demo ? '<span class="pro-badge">Perfil demonstrativo</span>' : '<span class="pro-badge">Agenda aberta</span>') + photo + "</div>" +
-      '<div class="pro-body">' +
-        '<span class="pro-specialty">' + esc(p.specialty) + "</span>" +
-        "<h3>" + esc(p.name) + "</h3>" +
-        '<ul class="pro-meta">' +
-          "<li>" + I.cap + "<span>" + esc(p.educationShort) + "</span></li>" +
-          "<li>" + I.briefcase + "<span>" + p.years + " anos de experiência</span></li>" +
-          "<li>" + I.pin + "<span>" + esc(mods) + " — " + esc(p.location) + "</span></li>" +
-        "</ul>" +
-        '<a class="btn btn--outline btn--block" href="perfil-profissional.html?id=' + encodeURIComponent(p.id) + '">Ver perfil</a>' +
-      "</div></article>";
-  }
-
-  function initFeatured() {
-    var grid = $("[data-featured]");
-    if (!grid || !DGR.PROFESSIONALS) return;
-    grid.innerHTML = DGR.PROFESSIONALS.slice(0, 3).map(proCardHTML).join("");
-  }
-
-  /* ---------- FAQ ---------- */
-  function initFAQ() {
-    $$(".faq-question").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var open = btn.getAttribute("aria-expanded") === "true";
-        btn.setAttribute("aria-expanded", String(!open));
-        document.getElementById(btn.getAttribute("aria-controls")).hidden = open;
-      });
-    });
-  }
-
-  /* ---------- Formulário de contato ---------- */
-  function initContact() {
-    var form = $("#contact-form");
-    if (!form) return;
-    bindLiveValidation(form);
-    var success = $("#contact-success");
-    var error = $("#contact-error");
-    var counter = $("#msg-count");
-    var msg = $("#c-message");
-    if (counter && msg) msg.addEventListener("input", function () { counter.textContent = msg.value.length; });
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      success.hidden = true;
-      error.hidden = true;
-      if (!validateForm(form)) {
-        error.hidden = false;
-        error.querySelector("span").textContent = "Revise os campos destacados antes de enviar.";
-        return;
-      }
-      var data = {
-        nome: form.nome.value.trim(), email: form.email.value.trim(), telefone: form.telefone.value.trim(),
-        assunto: form.assunto.value, mensagem: form.mensagem.value.trim(), criadoEm: new Date().toISOString()
-      };
-      var list = DGR.safeGet("dgr_mensagens", []);
-      list.push(data);
-      DGR.safeSet("dgr_mensagens", list);
-      form.reset();
-      if (counter) counter.textContent = "0";
-      success.hidden = false;
-      success.querySelector("span").textContent = "Obrigada, " + data.nome.split(" ")[0] + "! Sua mensagem foi registrada neste navegador. Esta é uma demonstração: nenhum e-mail foi enviado.";
-      success.scrollIntoView({ behavior: "smooth", block: "center" });
-      toast("Mensagem registrada (demonstração).", "success");
-    });
-  }
-
-  /* ---------- Newsletter do rodapé ---------- */
-  function initNewsletter() {
-    $$("[data-newsletter]").forEach(function (form) {
-      form.addEventListener("submit", function (e) {
+  /* ---------- WhatsApp ---------- */
+  function initWhatsApp() {
+    $$("[data-whatsapp]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
         e.preventDefault();
-        var input = form.querySelector("input");
-        if (RULES.email(input.value)) { toast("Informe um e-mail válido.", "error"); input.focus(); return; }
-        var list = DGR.safeGet("dgr_newsletter", []);
-        list.push(input.value.trim());
-        DGR.safeSet("dgr_newsletter", list);
-        form.reset();
-        toast("E-mail registrado neste navegador (demonstração).", "success");
+        if (!CONFIG.whatsapp) {
+          toast("O número de WhatsApp ainda não foi configurado. Use o formulário de contato.", "error");
+          return;
+        }
+        var url = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.whatsappMessage);
+        window.open(url, "_blank", "noopener");
       });
+    });
+    $$("[data-email]").forEach(function (el) {
+      if (CONFIG.email) { el.textContent = CONFIG.email; el.setAttribute("href", "mailto:" + CONFIG.email); }
+    });
+  }
+
+  /* ---------- Compartilhar e salvar ---------- */
+  function initShareSave() {
+    $$("[data-share]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var data = { title: document.title, url: location.href.split("#")[0] };
+        if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(data.url).then(function () { toast("Link copiado.", "success"); },
+            function () { toast("Não foi possível copiar o link.", "error"); });
+        } else {
+          window.prompt("Copie o link:", data.url);
+        }
+      });
+    });
+    $$("[data-save]").forEach(function (btn) {
+      var sync = function (saved) {
+        btn.setAttribute("aria-pressed", String(saved));
+        btn.querySelector("span").textContent = saved ? "Salvo" : "Salvar";
+      };
+      sync(storeGet("dgr_salvo", false));
+      btn.addEventListener("click", function () {
+        var saved = !storeGet("dgr_salvo", false);
+        storeSet("dgr_salvo", saved);
+        sync(saved);
+        toast(saved ? "Perfil salvo neste navegador." : "Perfil removido dos salvos.", "success");
+      });
+    });
+  }
+
+  /* ---------- "Mostrar mais" para textos cortados ---------- */
+  function initShowMore() {
+    var buttons = $$(".show-more");
+    if (!buttons.length) return;
+    var update = function () {
+      buttons.forEach(function (btn) {
+        var target = btn.previousElementSibling;
+        btn.hidden = !target.classList.contains("is-open") && target.scrollHeight <= target.clientHeight + 2;
+      });
+    };
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var open = btn.previousElementSibling.classList.toggle("is-open");
+        btn.textContent = open ? "Mostrar menos" : "Mostrar mais";
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+    update();
+    window.addEventListener("resize", update);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+  }
+
+  /* ---------- Abas do perfil (destaca a seção visível) ---------- */
+  function initProfileTabs() {
+    var links = $$(".profile-tabs a");
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (a) { a.classList.remove("is-active"); a.removeAttribute("aria-current"); });
+        var link = map[entry.target.id];
+        if (link) { link.classList.add("is-active"); link.setAttribute("aria-current", "true"); }
+      });
+    }, { rootMargin: "-35% 0px -60% 0px" });
+    Object.keys(map).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+  }
+
+  /* ---------- Blog: filtros e leitura ---------- */
+  function initBlog() {
+    var grid = $("#blog-grid");
+    if (!grid) return;
+    var chips = $$(".filter-bar .chip");
+    var status = $("#blog-status");
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var cat = chip.getAttribute("data-filter");
+        chips.forEach(function (c) { c.setAttribute("aria-pressed", String(c === chip)); });
+        var visible = 0;
+        $$(".post-card", grid).forEach(function (card) {
+          var show = cat === "todos" || card.getAttribute("data-category") === cat;
+          card.hidden = !show;
+          if (show) visible++;
+        });
+        status.textContent = visible === 1 ? "1 artigo" : visible + " artigos";
+      });
+    });
+
+    var modal = $("#article-modal");
+    grid.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-article]");
+      if (!btn) return;
+      var tpl = document.getElementById("artigo-" + btn.getAttribute("data-article"));
+      var card = btn.closest(".post-card");
+      $("#article-title").textContent = card.querySelector("h3").textContent;
+      $("#article-meta").textContent = card.querySelector(".post-meta").textContent.replace(/\s+/g, " ").trim();
+      var body = $("#article-body");
+      body.innerHTML = "";
+      body.appendChild(tpl.content.cloneNode(true));
+      openModal(modal);
+    });
+  }
+
+  /* ---------- Exercício de respiração (4-4-6) ---------- */
+  function initBreathing() {
+    var circle = $("#breath-circle");
+    if (!circle) return;
+    var label = $("#breath-label");
+    var btn = $("#breath-toggle");
+    var timers = [];
+    var running = false;
+    var phases = [
+      { cls: "is-in", text: "Inspire", ms: 4000 },
+      { cls: "is-hold", text: "Segure", ms: 4000 },
+      { cls: "is-out", text: "Expire", ms: 6000 }
+    ];
+    function clear() { timers.forEach(clearTimeout); timers = []; }
+    function cycle(i) {
+      var p = phases[i % phases.length];
+      circle.className = "breathing-circle " + p.cls;
+      label.textContent = p.text;
+      timers.push(setTimeout(function () { if (running) cycle(i + 1); }, p.ms));
+    }
+    btn.addEventListener("click", function () {
+      running = !running;
+      btn.textContent = running ? "Pausar" : "Começar";
+      btn.setAttribute("aria-pressed", String(running));
+      clear();
+      if (running) cycle(0);
+      else { circle.className = "breathing-circle"; label.textContent = "Pronto"; }
     });
   }
 
   function initYear() { $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); }); }
 
-  // API compartilhada com os scripts de cada página
+  /* ---------- API compartilhada com os demais scripts ---------- */
   window.App = {
-    $: $, $$: $$, toast: toast, maskPhone: maskPhone, bindPhoneMasks: bindPhoneMasks,
+    $: $, $$: $$, toast: toast, storeGet: storeGet, storeSet: storeSet,
+    maskPhone: maskPhone, bindPhoneMasks: bindPhoneMasks,
     validateForm: validateForm, validateField: validateField, bindLiveValidation: bindLiveValidation,
-    openModal: openModal, closeModal: closeModal, proCardHTML: proCardHTML, fillSpecialtySelect: fillSpecialtySelect,
-    formatLongDate: formatLongDate, formatTime: formatTime, timezoneLabel: timezoneLabel,
-    WEEKDAYS: WEEKDAYS, WEEKDAYS_SHORT: WEEKDAYS_SHORT, MONTHS: MONTHS
+    openModal: openModal, closeModal: closeModal, CONFIG: CONFIG
   };
 
   document.addEventListener("DOMContentLoaded", function () {
     initNav();
     initReveal();
-    initTestimonials();
-    initHomeSearch();
-    initFeatured();
-    initFAQ();
-    initContact();
-    initNewsletter();
+    initStars();
+    initWhatsApp();
+    initShareSave();
+    initShowMore();
+    initProfileTabs();
+    initBlog();
+    initBreathing();
     bindPhoneMasks();
     initYear();
   });
